@@ -1,6 +1,6 @@
 {
   "name": "accountdown-parser",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Facilitates account creation and user input validation using accountdown and json-schema",
   "main": "index.js",
   "scripts": {
