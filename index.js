@@ -1,13 +1,13 @@
 var extend = require('extend')
 var formBody = require('body/any')
 
-module.exports = accountdown-parser
+module.exports = Parser
 
-function accountdown-parser (accountdown, opts) {
-  if (!(this instanceof accountdown-parser)) {
-    return new accountdown-parser(accountdown, opts)
+function Parser (accountdown, opts) {
+  if (!(this instanceof Parser)) {
+    return new Parser(accountdown, opts)
   }
-  if (!opts) opts = {};
+  if (!opts) opts = {}
   this.accountdown = accountdown
   // When updating an account, this function tells us whether the
   // login credentials have been updated as well, which determines
@@ -17,24 +17,24 @@ function accountdown-parser (accountdown, opts) {
   // and performs user input validation
   this.validate = opts.validate
   // Formats the account request data that could not be done on the client
-  this.format = opts.format;
+  this.format = opts.format
 
   this.parse = function(string, cb) {
     var parsedBody = require('qs').parse(string)
-    return cb(null, parsedBody);
+    return cb(null, parsedBody)
   }
 }
 
-accountdown-parser.prototype.create = function (req, res, cb) {
-  var self = this;
+Parser.prototype.create = function (req, res, cb) {
+  var self = this
 
   formBody(req, res, { querystring: { parse: this.parse }}, function(err, body) {
     // Body returned is always an object of the form:
     // { login: {...}, value: {key: .., ...} }
-    if (err) return console.log("accountdown-parser: body did not parse:", err)
+    if (err) return console.log("Parser: body did not parse:", err)
     if (self.format)  body = self.format(body)
     if (!self.validate(body))
-      return console.log("\naccountdown-parser.create: invalid body: ", self.validate.errors)
+      return console.log("\nParser.create: invalid body: ", self.validate.errors)
 
     self.accountdown.create(body.value.key, body, function (err) {
       if (err) return logOrCallbackOnError(cb, err)
@@ -43,8 +43,8 @@ accountdown-parser.prototype.create = function (req, res, cb) {
   })
 }
 
-accountdown-parser.prototype.update = function (req, res, key, cb) {
-  var self = this;
+Parser.prototype.update = function (req, res, key, cb) {
+  var self = this
   self.accountdown.get(key, function (err, existingAccountValue) {
     if (err) return console.log(err)
     formBody(req, res, { querystring: { parse: self.parse }}, function(err, body) {
@@ -53,7 +53,7 @@ accountdown-parser.prototype.update = function (req, res, key, cb) {
       if (err) return console.log("Body did not parse: ", err)
       if (self.format)  body = self.format(body)
       if (!self.validate(body))
-        return console.log("\naccountdown-parser.update: invalid body: ", self.validate.errors)
+        return console.log("\nParser.update: invalid body: ", self.validate.errors)
 
       // Overwrite all new values in existing account, and retain any values not
       // defined in the body
