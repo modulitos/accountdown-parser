@@ -1,12 +1,11 @@
 var extend = require('extend')
 var formBody = require('body/any')
-//var formBody = require('body/form')
 
-module.exports = forms2accounts
+module.exports = accountdown-parser
 
-function forms2accounts (accountdown, opts) {
-  if (!(this instanceof forms2accounts)) {
-    return new forms2accounts(accountdown, opts)
+function accountdown-parser (accountdown, opts) {
+  if (!(this instanceof accountdown-parser)) {
+    return new accountdown-parser(accountdown, opts)
   }
   if (!opts) opts = {};
   this.accountdown = accountdown
@@ -26,16 +25,16 @@ function forms2accounts (accountdown, opts) {
   }
 }
 
-forms2accounts.prototype.create = function (req, res, cb) {
+accountdown-parser.prototype.create = function (req, res, cb) {
   var self = this;
 
   formBody(req, res, { querystring: { parse: this.parse }}, function(err, body) {
     // Body returned is always an object of the form:
     // { login: {...}, value: {key: .., ...} }
-    if (err) return console.log("forms2accounts: body did not parse:", err)
+    if (err) return console.log("accountdown-parser: body did not parse:", err)
     if (self.format)  body = self.format(body)
     if (!self.validate(body))
-      return console.log("\nforms2accounts.create: invalid body: ", self.validate.errors)
+      return console.log("\naccountdown-parser.create: invalid body: ", self.validate.errors)
 
     self.accountdown.create(body.value.key, body, function (err) {
       if (err) return logOrCallbackOnError(cb, err)
@@ -44,7 +43,7 @@ forms2accounts.prototype.create = function (req, res, cb) {
   })
 }
 
-forms2accounts.prototype.update = function (req, res, key, cb) {
+accountdown-parser.prototype.update = function (req, res, key, cb) {
   var self = this;
   self.accountdown.get(key, function (err, existingAccountValue) {
     if (err) return console.log(err)
@@ -54,7 +53,7 @@ forms2accounts.prototype.update = function (req, res, key, cb) {
       if (err) return console.log("Body did not parse: ", err)
       if (self.format)  body = self.format(body)
       if (!self.validate(body))
-        return console.log("\nforms2accounts.update: invalid body: ", self.validate.errors)
+        return console.log("\naccountdown-parser.update: invalid body: ", self.validate.errors)
 
       // Overwrite all new values in existing account, and retain any values not
       // defined in the body
