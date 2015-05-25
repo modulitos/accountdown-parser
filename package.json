@@ -1,0 +1,29 @@
+{
+  "name": "accountdown-parser",
+  "version": "0.1.1",
+  "description": "Facilitates account creation and user input validation using accountdown and json-schema",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LukeSwart/accountdown-parser.git"
+  },
+  "keywords": [
+    "account",
+    "form",
+    "accountdown"
+  ],
+  "author": "lukeswart",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LukeSwart/accountdown-parser/issues"
+  },
+  "homepage": "https://github.com/LukeSwart/accountdown-parser.git",
+  "dependencies": {
+    "body": "^5.0.0",
+    "extend": "^2.0.1"
+  },
+  "devDependencies": {}
+}
