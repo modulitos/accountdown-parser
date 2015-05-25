@@ -1,5 +1,5 @@
 var extend = require('extend')
-var formBody = require('body/any')
+var anyBody = require('body/any')
 
 module.exports = Parser
 
@@ -28,7 +28,7 @@ function Parser (accountdown, opts) {
 Parser.prototype.create = function (req, res, cb) {
   var self = this
 
-  formBody(req, res, { querystring: { parse: this.parse }}, function(err, body) {
+  anyBody(req, res, { querystring: { parse: this.parse }}, function(err, body) {
     // Body returned is always an object of the form:
     // { login: {...}, value: {key: .., ...} }
     if (err) return console.log("Parser: body did not parse:", err)
@@ -47,7 +47,7 @@ Parser.prototype.update = function (req, res, key, cb) {
   var self = this
   self.accountdown.get(key, function (err, existingAccountValue) {
     if (err) return console.log(err)
-    formBody(req, res, { querystring: { parse: self.parse }}, function(err, body) {
+    anyBody(req, res, { querystring: { parse: self.parse }}, function(err, body) {
       // Body returned is always an object of the form:
       // { login: {...}, value: {key: .., ...} }
       if (err) return console.log("Body did not parse: ", err)
