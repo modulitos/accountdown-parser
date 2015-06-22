@@ -3,12 +3,12 @@ var anyBody = require('body/any')
 
 module.exports = Parser
 
-function Parser (accountdown, opts) {
+function Parser (accountdownModel, opts) {
   if (!(this instanceof Parser)) {
-    return new Parser(accountdown, opts)
+    return new Parser(accountdownModel, opts)
   }
   if (!opts) opts = {}
-  this.accountdown = accountdown
+  this.accountdownModel = accountdownModel
   // When updating an account, this function tells us whether the
   // login credentials have been updated as well, which determines
   // the whether we will update the login database as well
@@ -31,12 +31,13 @@ Parser.prototype.create = function (req, res, cb) {
   anyBody(req, res, { querystring: { parse: this.parse }}, function(err, body) {
     // Body returned is always an object of the form:
     // { login: {...}, value: {key: .., ...} }
-    if (err) return console.log("Parser: body did not parse:", err)
+    if (err) return logOrCallbackOnError(cb, "Parser: body did not parse:" + err)
     if (self.format)  body = self.format(body)
     if (!self.validate(body))
-      return console.log("\nParser.create: invalid body: ", self.validate.errors)
+      return logOrCallbackOnError(cb, "Parser.create: invalid body: "
+        + self.validate.errors)
 
-    self.accountdown.create(body.value.key, body, function (err) {
+    self.accountdownModel.create(body.value.key, body, function (err) {
       if (err) return logOrCallbackOnError(cb, err)
       if (cb) return cb(err, body.value)
     })
@@ -45,36 +46,36 @@ Parser.prototype.create = function (req, res, cb) {
 
 Parser.prototype.update = function (req, res, key, cb) {
   var self = this
-  self.accountdown.get(key, function (err, existingAccountValue) {
-    if (err) return console.log(err)
+  self.accountdownModel.get(key, function (err, existingAccountValue) {
+    if (err) return logOrCallbackOnError(cb, err)
     anyBody(req, res, { querystring: { parse: self.parse }}, function(err, body) {
       // Body returned is always an object of the form:
       // { login: {...}, value: {key: .., ...} }
-      if (err) return console.log("Body did not parse: ", err)
+      if (err) return logOrCallbackOnError(cb, "Body did not parse: " + err)
       if (self.format)  body = self.format(body)
       if (!self.validate(body))
-        return console.log("\nParser.update: invalid body: ", self.validate.errors)
+        return logOrCallbackOnError(cb, "Parser.update: invalid body: "
+          + self.validate.errors)
 
       // Overwrite all new values in existing account, and retain any values not
       // defined in the body
       body.value = extend(existingAccountValue, body.value)
       // If login credentials have changed, then we need to delete and re-create the account
       if (self.updateLoginCreds(body)) {
-        self.accountdown.remove(body.value.key, function (err) {
-          if (err) return console.log("err while deleting old account:", err)
+        self.accountdownModel.remove(body.value.key, function (err) {
+          if (err) return logOrCallbackOnError(cb, "err while deleting old account:" + err)
           // If we are updating the username, then the password must be supplied as well...
-          self.accountdown.create(body.value.key, body, function (err) {
+          self.accountdownModel.create(body.value.key, body, function (err) {
             if (err) return logOrCallbackOnError(cb, err)
             if (cb) return cb(err, body.value)
           })
         })
       } else {
-        self.accountdown.put(body.value.key, body.value, function (err) {
+        self.accountdownModel.put(body.value.key, body.value, function (err) {
           if (err) return logOrCallbackOnError(cb, err)
           if (cb) return cb(err, body.value)
         })
       }
-
     })
   })
 }

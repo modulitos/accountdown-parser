@@ -4,7 +4,7 @@
   "description": "Facilitates account creation and user input validation using accountdown and json-schema",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "tape tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +22,18 @@
   },
   "homepage": "https://github.com/LukeSwart/accountdown-parser.git",
   "dependencies": {
+    "accountdown": "^4.1.0",
+    "accountdown-basic": "^1.1.0",
+    "accountdown-model": "^1.0.0",
     "body": "^5.0.0",
-    "extend": "^2.0.1"
-  },
-  "devDependencies": {}
+    "each-async": "^1.1.1",
+    "extend": "^2.0.1",
+    "hammock": "^1.0.2",
+    "is-my-json-valid": "^2.12.0",
+    "levelup": "^1.2.1",
+    "memdown": "^1.0.0",
+    "qs": "^3.1.0",
+    "subleveldown": "^2.0.0",
+    "tape": "^4.0.0"
+  }
 }
