@@ -1,6 +1,6 @@
 # accountdown-parser
 
-Account creation and user input validation for [accountdown](https://github.com/substack/accountdown) using json-schema. Primary usage is on the server.
+Account creation and user input validation for [accountdown-model](https://github.com/sethvincent/accountdown-model) using json-schema. Primary usage is on the server.
 
 # example
 
@@ -74,16 +74,16 @@ Account creation and user input validation for [accountdown](https://github.com/
       return body;
     },
     updateLoginCreds: function (account) {
-      return account.hasOwnProperty('login');
+      return Object.prototype.hasOwnProperty(account, 'login');
     }
 ```
 
 
 # methods
 
-## var p = accountdown-parser(accountdown, opts)
+## var p = accountdown-parser(a, opts)
 
-Return a parser instance `p` given an accountdown instance `a`.
+Return a parser instance `p` given an accountdown-model instance `a`.
 
 Set `opts.validate` as an instance of [is-my-json-valid](https://www.npmjs.com/package/is-my-json-valid) to define the schema that will be validated for each user instance.
 
